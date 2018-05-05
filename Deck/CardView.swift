@@ -56,8 +56,7 @@ class CardView: UIView
         let attributedString = NSAttributedString(string: emoji, attributes: [.paragraphStyle:paragraphStyle,.font:font])
         
         var stringRect = bounds
-        stringRect.size.height = attributedString.size().height
-        stringRect.origin.y += stringRect.size.height/2
+        stringRect.origin.y = stringRect.size.height/2 - attributedString.size().height/2
         attributedString.draw(in: stringRect)
     }
     
