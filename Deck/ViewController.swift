@@ -25,6 +25,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
             view.isOpaque = true;
             view.backgroundColor = UIColor.clear
             self.view.addSubview(view)
+            widget.position = self.view.subviews.index(of: view)!
             view.delegate = self
             
         }
@@ -137,6 +138,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
                                                             animations: {
                                                                 card.transform = card.transform.rotated(by: self.deck.cards[card.associatedCard!]!.rotation)
                                                                 self.view.sendSubview(toBack: card)
+                                                                self.deck.cards[card.associatedCard!]!.position = self.view.subviews.index(of: card)!
                                                                 card.center = self.view.center
                                                         })
         })

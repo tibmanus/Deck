@@ -13,6 +13,7 @@ class CardWidget: NSObject {
     let emoji : String
     let color : UIColor
     let rotation : CGFloat
+    var position : Int = 0
     
     override init() {
         let stringIndex = CardWidget.emojis.index(CardWidget.emojis.startIndex, offsetBy: CardWidget.emojis.count.arc4random)
