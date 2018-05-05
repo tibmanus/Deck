@@ -71,6 +71,9 @@ class CardView: UIView
     override func draw(_ rect: CGRect) {
         drawCorners()
         drawEmoji()
+
+        self.layer.shadowOffset = CGSize(width: 0, height: 3)
+        self.layer.shadowOpacity = 0.3
     }
 }
 
