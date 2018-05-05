@@ -43,6 +43,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
         view.gestureRecognizers = nil
     }
     
+    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: duration,
+                                                       delay: 0,
+                                                       options:[],
+                                                       animations: {
+                    self.view.subviews.forEach() {view in view.center = self.view.center}
+        })
+    }
+    
     // MARK: - UIGestureRecognizer Actions
     @objc func drag(_ gestureRecognizer: UIPanGestureRecognizer) {
         guard let cardView = gestureRecognizer.view as? CardView else {return}
