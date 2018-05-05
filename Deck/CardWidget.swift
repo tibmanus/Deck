@@ -15,8 +15,9 @@ class CardWidget: NSObject {
     let rotation : CGFloat
     
     override init() {
-        emoji = String(CardWidget.emojis[CardWidget.emojis.index(CardWidget.emojis.startIndex, offsetBy: CardWidget.emojis.count.arc4random)]) // pick a random image
-        color = CardWidget.colors[CardWidget.colors.count.arc4random] // pick a random color
+        let stringIndex = CardWidget.emojis.index(CardWidget.emojis.startIndex, offsetBy: CardWidget.emojis.count.arc4random)
+        emoji = String(CardWidget.emojis.remove(at: stringIndex)) // pick a random image
+        color = CardWidget.colors.remove(at: CardWidget.colors.count.arc4random) // pick a random color
         rotation = (CGFloat.pi/8).arc4random // pick a random rotation
         super.init()
     }
@@ -36,7 +37,7 @@ class CardWidget: NSObject {
                                UIColor.purple,
                                UIColor.brown]
     
-    static let emojis = "🦁🐮🐅🦋🐛🐝🦄🦆🦉🦇🐺🐗🐴🐜🦖🐟"
+    static var emojis = "🦁🐮🐅🦋🐛🐝🦄🐖🦆🦉🐉🦇🐺🐗🐴🐜🦖🐟"
 }
 
 
