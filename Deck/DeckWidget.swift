@@ -6,19 +6,17 @@
 //  Copyright © 2018 Tibor Beke. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
-class DeckWidget: NSObject {
+class DeckWidget {
 
     private static let numberOfCards = 10
     
     private(set) var cards = [Card:CardWidget]()
     
-    override init() {
+    init() {
         for _ in 1...DeckWidget.numberOfCards {
             cards[Card()] = CardWidget()
         }
-        
-        super.init()
     }
 }

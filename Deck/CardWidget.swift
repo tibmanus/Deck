@@ -8,19 +8,26 @@
 
 import UIKit
 
-class CardWidget: NSObject {
+class CardWidget {
     
     let emoji : String
     let color : UIColor
     let rotation : CGFloat
     var position : Int = 0
     
-    override init() {
+    init() {
+        if (CardWidget.emojis.count > 0) {
         let stringIndex = CardWidget.emojis.index(CardWidget.emojis.startIndex, offsetBy: CardWidget.emojis.count.arc4random)
         emoji = String(CardWidget.emojis.remove(at: stringIndex)) // pick a random image
+        } else {
+            emoji = "❓"
+        }
+        if (CardWidget.colors.count > 0) {
         color = CardWidget.colors.remove(at: CardWidget.colors.count.arc4random) // pick a random color
+        } else {
+            color = UIColor.clear
+        }
         rotation = (CGFloat.pi/8).arc4random // pick a random rotation
-        super.init()
     }
 
     static var colors : [UIColor] = [ 
