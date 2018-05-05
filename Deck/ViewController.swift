@@ -111,11 +111,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
     
     // MARK: - CardViewDelegate
     func interactionEnded(with card: CardView) {
-        NSLog("interaction ended with \(card)")
-
         disableGestures(on: card)
         enableGestures(on: self.view.subviews[self.view.subviews.index(of: card)!-1])
-        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.6,
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: duration,
                                                        delay: 0,
                                                        options:[],
                                                        animations: {
@@ -124,7 +122,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
                                                         },
                                                        completion: { _ in
                                                         UIViewPropertyAnimator.runningPropertyAnimator(
-                                                            withDuration: 0.6,
+                                                            withDuration: self.duration,
                                                             delay: 0,
                                                             options: [],
                                                             animations: {
@@ -135,5 +133,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
         })
     }
     
+}
+
+extension ViewController {
+    var duration : Double { return 0.6 }
 }
 

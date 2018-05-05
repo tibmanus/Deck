@@ -19,7 +19,7 @@ class CardView: UIView
     @IBInspectable
     var color: UIColor = UIColor.cyan { didSet { setNeedsDisplay(); setNeedsLayout() } }
     
-    var rotation: CGFloat = 0.0 { didSet {
+    var rotation: CGFloat = 0 { didSet {
         self.transform = self.transform.rotated(by: self.rotation)
         }
     }
@@ -48,23 +48,17 @@ class CardView: UIView
         }
     }
     
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        setNeedsDisplay()
-        setNeedsLayout()
-    }
-    
     private func drawEmoji()
     {
-        var font = UIFont.preferredFont(forTextStyle: .body).withSize(54)
-        font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
+        let font = UIFont.preferredFont(forTextStyle: .body).withSize(fontSize)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        let pipString = NSAttributedString(string: emoji, attributes: [.paragraphStyle:paragraphStyle,.font:font])
+        let attributedString = NSAttributedString(string: emoji, attributes: [.paragraphStyle:paragraphStyle,.font:font])
         
-        var pipRect = bounds
-        pipRect.size.height = pipString.size().height
-        pipRect.origin.y += (pipRect.size.height) / 2
-        pipString.draw(in: pipRect)
+        var stringRect = bounds
+        stringRect.size.height = attributedString.size().height
+        stringRect.origin.y += stringRect.size.height/2
+        attributedString.draw(in: stringRect)
     }
     
     private func drawCorners() {
@@ -88,6 +82,7 @@ extension CardView {
     private struct SizeRatio {
         static let cornerRadiusToBoundsHeight: CGFloat = 0.06
     }
+    private var fontSize : CGFloat { return 108 }
     private var cornerRadius: CGFloat {
         return bounds.size.height * SizeRatio.cornerRadiusToBoundsHeight
     }
