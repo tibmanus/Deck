@@ -10,18 +10,37 @@ import UIKit
 
 class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDelegate {
 
-    @IBOutlet var deck: [CardView]!
-
+    var deck = DeckWidget()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        for card in deck {
-            card.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(drag(_:))))
-            card.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(pinch(_:))))
-            card.addGestureRecognizer(UIRotationGestureRecognizer(target: self, action: #selector(rotate(_:))))
-            card.gestureRecognizers?.forEach({ $0.delegate = self })
-            card.delegate = self
+        for (card, widget) in deck.cards {
+            let view = CardView(frame: CGRect(origin: self.view.center, size: CGSize(width: 150, height: 220)))
+            view.associatedCard = card
+            view.color = widget.color
+            view.emoji = widget.emoji
+            view.rotation = widget.rotation
+            view.center = self.view.center
+            view.isOpaque = true;
+            view.backgroundColor = UIColor.clear
+            self.view.addSubview(view)
+            view.delegate = self
+            
         }
+        enableGestures(on: self.view.subviews.last!)
+    }
+    
+    fileprivate func enableGestures(on view: UIView) {
+        view.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(drag(_:))))
+        view.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(pinch(_:))))
+        view.addGestureRecognizer(UIRotationGestureRecognizer(target: self, action: #selector(rotate(_:))))
+        view.gestureRecognizers?.forEach({ $0.delegate = self })
+        
+    }
+    
+    fileprivate func disableGestures(on view: UIView) {
+        view.gestureRecognizers = nil
     }
     
     // MARK: - UIGestureRecognizer Actions
@@ -93,32 +112,28 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
     // MARK: - CardViewDelegate
     func interactionEnded(with card: CardView) {
         NSLog("interaction ended with \(card)")
-        
+
+        disableGestures(on: card)
+        enableGestures(on: self.view.subviews[self.view.subviews.index(of: card)!-1])
         UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.6,
                                                        delay: 0,
                                                        options:[],
                                                        animations: {
                                                         card.center = self.view.bounds.origin
+                                                        card.transform = CGAffineTransform.identity
                                                         },
-                                                       completion: { position in
+                                                       completion: { _ in
                                                         UIViewPropertyAnimator.runningPropertyAnimator(
                                                             withDuration: 0.6,
                                                             delay: 0,
                                                             options: [],
                                                             animations: {
+                                                                card.transform = card.transform.rotated(by: self.deck.cards[card.associatedCard!]!.rotation)
                                                                 self.view.sendSubview(toBack: card)
                                                                 card.center = self.view.center
                                                         })
         })
     }
     
-}
-
-extension CGRect {
-    func zoom(by scale: CGFloat) -> CGRect {
-        let newWidth = width * scale
-        let newHeight = height * scale
-        return insetBy(dx: (width - newWidth) / 2, dy: (height - newHeight) / 2)
-    }
 }
 

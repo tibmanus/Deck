@@ -11,11 +11,18 @@ import UIKit
 @IBDesignable
 class CardView: UIView
 {
+    var associatedCard : Card?
+    
     @IBInspectable
     var emoji: String = "❤️" { didSet { setNeedsDisplay(); setNeedsLayout() } }
     
     @IBInspectable
     var color: UIColor = UIColor.cyan { didSet { setNeedsDisplay(); setNeedsLayout() } }
+    
+    var rotation: CGFloat = 0.0 { didSet {
+        self.transform = self.transform.rotated(by: self.rotation)
+        }
+    }
     
     var delegate : CardViewDelegate?
     
@@ -24,10 +31,12 @@ class CardView: UIView
         self.interactionEnded()
         }
     }
+    
     var dragEnded : Bool = true { didSet {
         self.interactionEnded()
         }
     }
+    
     var rotateEnded : Bool = true { didSet {
         self.interactionEnded()
         }
