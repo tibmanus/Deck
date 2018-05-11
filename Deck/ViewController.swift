@@ -52,7 +52,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         coordinator.animate(alongsideTransition: { context in
             self.view.subviews.forEach() { view in
-                view.center = self.view.center
+                if let superview = view.superview {
+                    view.center = superview.center
+                }
             }
         }, completion: nil)
     }
@@ -179,4 +181,3 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 extension ViewController {
     var duration : Double { return 0.6 }
 }
-
