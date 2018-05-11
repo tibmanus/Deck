@@ -43,15 +43,23 @@ class CardView: UIView
         roundedRect.fill()
     }
     
-    override func draw(_ rect: CGRect) {
-        drawCorners()
-        drawEmoji()
-
+    fileprivate func addShadow() {
         layer.shadowOffset = CGSize(width: 0, height: 3)
         layer.shadowOpacity = 0.3
         layer.masksToBounds = false
         layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius).cgPath
     }
+    
+    override func draw(_ rect: CGRect) {
+        drawCorners()
+        drawEmoji()
+    }
+    
+    override func setNeedsLayout() {
+        super.setNeedsLayout()
+        addShadow()
+    }
+    
 }
 
 extension CardView {
