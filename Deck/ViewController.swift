@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
-    var deck = DeckWidget()
+    var deck = Deck()
     
     var initialCenter = [CardView:CGPoint]()
     
@@ -21,17 +21,16 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     fileprivate func addCards() {
-        for (card, widget) in deck.cards {
+        for card in deck.cards {
             let view = CardView(frame: CGRect(origin: self.view.center, size: CGSize(width: 150, height: 220)))
             view.associatedCard = card
-            view.color = widget.color
-            view.emoji = widget.emoji
-            view.rotation = widget.rotation
+            view.color = card.color
+            view.emoji = card.emoji
+            view.rotation = card.rotation
             view.center = self.view.center
             view.backgroundColor = UIColor.clear
-            widget.position = self.view.subviews.count
+            card.position = self.view.subviews.count
             self.view.addSubview(view)
-            
         }
         enableGestures(on: self.view.subviews.last)
     }
@@ -154,14 +153,14 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                                                             delay: 0,
                                                             options: [],
                                                             animations: {
-                                                                if let widget = self.deck.cards[card.associatedCard]
+                                                                if let index = self.deck.cards.index(of: card.associatedCard)
                                                                 {
-                                                                    card.transform = card.transform.rotated(by: widget.rotation)
+                                                                    card.transform = card.transform.rotated(by: self.deck.cards[index].rotation)
                                                                     self.view.sendSubview(toBack: card)
                                                                     if let index = self.view.subviews.index(of: card) {
-                                                                        widget.position = index
+                                                                        self.deck.cards[index].position = index
                                                                     } else {
-                                                                        widget.position = -1
+                                                                        self.deck.cards[index].position = -1
                                                                     }
                                                                     card.center = self.view.center
                                                                 }

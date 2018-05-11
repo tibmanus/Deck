@@ -8,15 +8,15 @@
 
 import Foundation
 
-class DeckWidget {
+class Deck {
 
     private static let numberOfCards = 10
     
-    private(set) var cards = [Card:CardWidget]()
+    private(set) var cards = [Card]()
     
     init() {
-        for _ in 1...DeckWidget.numberOfCards {
-            cards[Card()] = CardWidget()
+        for _ in 1...Deck.numberOfCards {
+            cards.append(Card())
         }
     }
 }
