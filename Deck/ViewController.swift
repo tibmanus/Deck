@@ -24,10 +24,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             view.emoji = widget.emoji
             view.rotation = widget.rotation
             view.center = self.view.center
-            view.isOpaque = true;
             view.backgroundColor = UIColor.clear
+            widget.position = self.view.subviews.count
             self.view.addSubview(view)
-            widget.position = self.view.subviews.index(of: view)!
             
         }
         enableGestures(on: self.view.subviews.last!)
