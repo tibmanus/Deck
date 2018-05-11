@@ -47,13 +47,14 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         view.gestureRecognizers = nil
     }
     
-    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
-        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: duration,
-                                                       delay: 0,
-                                                       options:[],
-                                                       animations: {
-                                                        self.view.subviews.forEach() {view in view.center = self.view.center}
-        })
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            self.view.subviews.forEach() { view in
+                view.center = self.view.center
+            }
+        }, completion: nil)
     }
     
     // MARK: - UIGestureRecognizer Actions
