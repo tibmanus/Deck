@@ -8,9 +8,11 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDelegate {
+class ViewController: UIViewController, UIGestureRecognizerDelegate {
 
     var deck = DeckWidget()
+    
+    var initialCenter = [CardView:CGPoint]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +28,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
             view.backgroundColor = UIColor.clear
             self.view.addSubview(view)
             widget.position = self.view.subviews.index(of: view)!
-            view.delegate = self
             
         }
         enableGestures(on: self.view.subviews.last!)
@@ -37,7 +38,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
         view.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(pinch(_:))))
         view.addGestureRecognizer(UIRotationGestureRecognizer(target: self, action: #selector(rotate(_:))))
         view.gestureRecognizers?.forEach({ $0.delegate = self })
-        
     }
     
     fileprivate func disableGestures(on view: UIView) {
@@ -61,26 +61,24 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
         let translation = gestureRecognizer.translation(in: cardView.superview)
         if gestureRecognizer.state == .began {
             // Save the view's original position.
-            cardView.initialCenter = cardView.center
+            initialCenter[cardView] = cardView.center
         }
         // Update the position for the .began, .changed, and .ended states
         if gestureRecognizer.state != .cancelled {
             // Add the X and Y translation to the view's original position.
-            let newCenter = CGPoint(x: cardView.initialCenter.x + translation.x, y: cardView.initialCenter.y + translation.y)
+            let newCenter = CGPoint(x: initialCenter[cardView]!.x + translation.x, y: initialCenter[cardView]!.y + translation.y)
             cardView.center = newCenter
         }
         else {
             // On cancellation, return the piece to its original location.
-            cardView.center = cardView.initialCenter
+            cardView.center = initialCenter[cardView]!
         }
         
         switch gestureRecognizer.state {
-        case .began, .changed:
-            cardView.dragEnded = false
         case .ended:
-            cardView.dragEnded = true
-        default:
-            break
+            interactionEnded(with: cardView)
+        default: break
+
         }
     }
     
@@ -89,11 +87,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
         
         switch gestureRecognizer.state {
         case .began, .changed:
-            cardView.rotateEnded = false
             cardView.transform = cardView.transform.rotated(by: gestureRecognizer.rotation)
             gestureRecognizer.rotation = 0
         case .ended:
-            cardView.rotateEnded = true
+            interactionEnded(with: cardView)
         default: break
         }
     }
@@ -103,12 +100,12 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
         
         switch gestureRecognizer.state {
         case .began, .changed:
-            cardView.pinchEnded = false
             cardView.transform = (cardView.transform.scaledBy(x: gestureRecognizer.scale, y: gestureRecognizer.scale))
             gestureRecognizer.scale = 1.0
         case .ended:
-            cardView.pinchEnded = true
+            interactionEnded(with: cardView)
         default: break
+        
         }
     }
     
@@ -119,8 +116,22 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
             return true
     }
     
-    // MARK: - CardViewDelegate
-    func interactionEnded(with card: CardView) {
+    private func interactionEnded(with card: CardView) {
+        var ended = false
+        
+        card.gestureRecognizers?.forEach({ recognizer in
+            if (recognizer.state != .began && recognizer.state != .changed) {
+                ended = true
+            } else {
+                ended = false
+            }
+        })
+        
+        if ended != true {
+            return
+            
+        }
+        
         disableGestures(on: card)
         enableGestures(on: self.view.subviews[self.view.subviews.index(of: card)!-1])
         UIViewPropertyAnimator.runningPropertyAnimator(withDuration: duration,
@@ -129,7 +140,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
                                                        animations: {
                                                         card.center = self.view.bounds.origin
                                                         card.transform = CGAffineTransform.identity
-                                                        },
+        },
                                                        completion: { _ in
                                                         UIViewPropertyAnimator.runningPropertyAnimator(
                                                             withDuration: self.duration,
@@ -143,7 +154,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, CardViewDel
                                                         })
         })
     }
-    
 }
 
 extension ViewController {

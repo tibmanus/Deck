@@ -11,7 +11,7 @@ import UIKit
 @IBDesignable
 class CardView: UIView
 {
-    var associatedCard : Card?
+    var associatedCard : Card!
     
     @IBInspectable
     var emoji: String = "❤️" { didSet { setNeedsDisplay(); setNeedsLayout() } }
@@ -21,30 +21,6 @@ class CardView: UIView
     
     var rotation: CGFloat = 0 { didSet {
         self.transform = self.transform.rotated(by: self.rotation)
-        }
-    }
-    
-    var delegate : CardViewDelegate?
-    
-    var initialCenter = CGPoint()  // The initial center point of the view.
-    var pinchEnded : Bool = true { didSet {
-        self.interactionEnded()
-        }
-    }
-    
-    var dragEnded : Bool = true { didSet {
-        self.interactionEnded()
-        }
-    }
-    
-    var rotateEnded : Bool = true { didSet {
-        self.interactionEnded()
-        }
-    }
-    
-    private func interactionEnded() {
-        if pinchEnded && dragEnded && rotateEnded {
-            delegate?.interactionEnded(with: self)
         }
     }
     
@@ -76,10 +52,6 @@ class CardView: UIView
         layer.masksToBounds = false
         layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius).cgPath
     }
-}
-
-protocol CardViewDelegate {
-    func interactionEnded(with card: CardView)
 }
 
 extension CardView {
